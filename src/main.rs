@@ -5,15 +5,37 @@ use std::time::Instant;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
+    if args.len() < 3 {
+        println!("Error: not enough arguments provided. Please provide an input file and an output file.");
+        return;
+    }
     let input_file = &args[1];
     let output_file = &args[2];
 
-    let file = File::open(input_file).unwrap();
+    let file = match File::open(input_file) {
+        Ok(file) => file,
+        Err(error) => {
+            println!("Error opening file {}: {}", input_file, error);
+            return;
+        }
+    };
     let reader = BufReader::new(file);
     let mut values: Vec<i32> = Vec::new();
     for line in reader.lines() {
-        let line = line.unwrap();
-        let value: i32 = line.parse().unwrap();
+        let line = match line {
+            Ok(line) => line,
+            Err(error) => {
+                println!("Error reading line: {}", error);
+                continue;
+            }
+        };
+        let value: i32 = match line.parse() {
+            Ok(value) => value,
+            Err(error) => {
+                println!("Error parsing line value: {}", error);
+                continue;
+            }
+        };
         values.push(value);
     }
 
@@ -24,11 +46,20 @@ fn main() {
     let elapsed_time = start_time.elapsed();
     println!("Elapsed time: {:?}", elapsed_time);
 
-    let output_file = File::create(output_file).unwrap();
+    let output_file = match File::create(output_file) {
+        Ok(file) => file,
+        Err(error) => {
+            println!("Error creating file {}: {}", output_file, error);
+            return;
+        }
+    };
     let mut writer = BufWriter::new(output_file);
 
     for value in values {
-        writeln!(writer, "{}", value).unwrap();
+        match writeln!(writer, "{}", value) {
+            Ok(_) => (),
+            Err(error) => println!("Error writing to file: {}", error),
+        }
     }
 }
 
