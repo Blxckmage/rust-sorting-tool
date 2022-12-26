@@ -1,10 +1,11 @@
 use std::env;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, BufWriter, Write};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     let input_file = &args[1];
+    let output_file = &args[2];
 
     let file = File::open(input_file).unwrap();
     let reader = BufReader::new(file);
@@ -15,10 +16,12 @@ fn main() {
         values.push(value);
     }
 
-    // Sort the values using your sorting algorithm
     values.sort();
-    println!("Sorted list of numbers:");
+
+    let mut output_file = File::create(output_file).unwrap();
+    let mut writer = BufWriter::new(output_file);
+
     for value in values {
-        println!("- {}", value);
+        writeln!(writer, "{} ", value).unwrap();
     }
 }
