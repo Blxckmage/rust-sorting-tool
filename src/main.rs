@@ -15,7 +15,10 @@ fn main() {
         values.push(value);
     }
 
+    // Sort the values using your sorting algorithm
     values.sort();
-
-    println!("{:?}", values);
+    println!("Sorted list of numbers:");
+    for value in values {
+        println!("- {}", value);
+    }
 }
