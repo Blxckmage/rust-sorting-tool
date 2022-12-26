@@ -1,8 +1,12 @@
+use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 fn main() {
-    let file = File::open("../test-files/numbers.txt").unwrap();
+    let args: Vec<String> = env::args().collect();
+    let input_file = &args[1];
+
+    let file = File::open(input_file).unwrap();
     let reader = BufReader::new(file);
     let mut values: Vec<i32> = Vec::new();
     for line in reader.lines() {
