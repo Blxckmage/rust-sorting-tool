@@ -1,3 +1,4 @@
+use colored::*;
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
@@ -6,7 +7,7 @@ use std::time::Instant;
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
-        println!("Error: not enough arguments provided. Please provide an input file and an output file.");
+        println!("{}", "Error: not enough arguments provided. Please provide an input file and an output file.".red());
         return;
     }
     let input_file = &args[1];
@@ -15,7 +16,10 @@ fn main() {
     let file = match File::open(input_file) {
         Ok(file) => file,
         Err(error) => {
-            println!("Error opening file {}: {}", input_file, error);
+            println!(
+                "{}",
+                format!("Error opening file {}: {}", input_file, error).red()
+            );
             return;
         }
     };
@@ -25,14 +29,14 @@ fn main() {
         let line = match line {
             Ok(line) => line,
             Err(error) => {
-                println!("Error reading line: {}", error);
+                println!("{}", format!("Error reading line: {}", error).red());
                 continue;
             }
         };
         let value: i32 = match line.parse() {
             Ok(value) => value,
             Err(error) => {
-                println!("Error parsing line value: {}", error);
+                println!("{}", format!("Error parsing line value: {}", error).red());
                 continue;
             }
         };
@@ -49,7 +53,10 @@ fn main() {
     let output_file = match File::create(output_file) {
         Ok(file) => file,
         Err(error) => {
-            println!("Error creating file {}: {}", output_file, error);
+            println!(
+                "{}",
+                format!("Error creating file {}: {}", output_file, error).red()
+            );
             return;
         }
     };
@@ -58,7 +65,7 @@ fn main() {
     for value in values {
         match writeln!(writer, "{}", value) {
             Ok(_) => (),
-            Err(error) => println!("Error writing to file: {}", error),
+            Err(error) => println!("{}", format!("Error writing to file: {}", error).red()),
         }
     }
 }
